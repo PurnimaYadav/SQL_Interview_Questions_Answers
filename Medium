@@ -1,0 +1,1619 @@
+1174. Immediate Food Delivery II
+2022-08-26 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Delivery
+
++-----------------------------+---------+
+| Column Name                 | Type    |
++-----------------------------+---------+
+| delivery_id                 | int     |
+| customer_id                 | int     |
+| order_date                  | date    |
+| customer_pref_delivery_date | date    |
++-----------------------------+---------+
+delivery_id is the primary key of this table.
+The table holds information about food delivery to customers that make orders at some date and specify a preferred delivery date (on the same order date or after it).
+If the customer’s preferred delivery date is the same as the order date, then the order is called immediate; otherwise, it is called scheduled.
+
+The first order of a customer is the order with the earliest order date that the customer made. It is guaranteed that a customer has precisely one first order.
+
+Write an SQL query to find the percentage of immediate orders in the first orders of all customers, rounded to 2 decimal places.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Delivery table:
++-------------+-------------+------------+-----------------------------+
+| delivery_id | customer_id | order_date | customer_pref_delivery_date |
++-------------+-------------+------------+-----------------------------+
+| 1           | 1           | 2019-08-01 | 2019-08-02                  |
+| 2           | 2           | 2019-08-02 | 2019-08-02                  |
+| 3           | 1           | 2019-08-11 | 2019-08-12                  |
+| 4           | 3           | 2019-08-24 | 2019-08-24                  |
+| 5           | 3           | 2019-08-21 | 2019-08-22                  |
+| 6           | 2           | 2019-08-11 | 2019-08-13                  |
+| 7           | 4           | 2019-08-09 | 2019-08-09                  |
++-------------+-------------+------------+-----------------------------+
+Output: 
++----------------------+
+| immediate_percentage |
++----------------------+
+| 50.00                |
++----------------------+
+Explanation: 
+The customer id 1 has a first order with delivery id 1 and it is scheduled.
+The customer id 2 has a first order with delivery id 2 and it is immediate.
+The customer id 3 has a first order with delivery id 5 and it is scheduled.
+The customer id 4 has a first order with delivery id 7 and it is immediate.
+Hence, half the customers have immediate first orders.
+Code
+SELECT
+    ROUND(100*SUM(CASE WHEN order_date = customer_pref_delivery_date THEN 1
+    ELSE 0 END)/ COUNT(distinct customer_id) ,2) AS immediate_percentage
+FROM
+    Delivery
+WHERE
+    (customer_id, order_date)
+IN
+(SELECT
+    customer_id, min(order_date) as min_date
+FROM
+    Delivery
+GROUP BY
+    customer_id
+);
+
+====================
+
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+1699. Number of Calls Between Two Persons
+2022-08-27 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Calls
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| from_id     | int     |
+| to_id       | int     |
+| duration    | int     |
++-------------+---------+
+This table does not have a primary key, it may contain duplicates.
+This table contains the duration of a phone call between from_id and to_id.
+from_id != to_id
+Write an SQL query to report the number of calls and the total call duration between each pair of distinct persons (person1, person2) where person1 < person2.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Calls table:
++---------+-------+----------+
+| from_id | to_id | duration |
++---------+-------+----------+
+| 1       | 2     | 59       |
+| 2       | 1     | 11       |
+| 1       | 3     | 20       |
+| 3       | 4     | 100      |
+| 3       | 4     | 200      |
+| 3       | 4     | 200      |
+| 4       | 3     | 499      |
++---------+-------+----------+
+Output: 
++---------+---------+------------+----------------+
+| person1 | person2 | call_count | total_duration |
++---------+---------+------------+----------------+
+| 1       | 2       | 2          | 70             |
+| 1       | 3       | 1          | 20             |
+| 3       | 4       | 4          | 999            |
++---------+---------+------------+----------------+
+Explanation: 
+Users 1 and 2 had 2 calls and the total duration is 70 (59 + 11).
+Users 1 and 3 had 1 call and the total duration is 20.
+Users 3 and 4 had 4 calls and the total duration is 999 (100 + 200 + 200 + 499).
+Code
+SELECT LEAST(from_id,to_id) as person1,
+GREATEST(from_id,to_id) as person2,
+COUNT(*) as call_count,
+SUM(duration) as total_duration
+FROM Calls
+GROUP BY person1,person2;
+1693. Daily Leads and Partners
+1701. Average Waiting Time 
+yt
+
+=============================
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+1596. The Most Frequently Ordered Products for Each Customer
+2022-08-27 Medium 
+
+Problem
+Table: Customers
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| customer_id   | int     |
+| name          | varchar |
++---------------+---------+
+customer_id is the primary key for this table.
+This table contains information about the customers.
+Table: Orders
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| order_id      | int     |
+| order_date    | date    |
+| customer_id   | int     |
+| product_id    | int     |
++---------------+---------+
+order_id is the primary key for this table.
+This table contains information about the orders made by customer_id.
+No customer will order the same product more than once in a single day.
+Table: Products
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| product_id    | int     |
+| product_name  | varchar |
+| price         | int     |
++---------------+---------+
+product_id is the primary key for this table.
+This table contains information about the products.
+Write an SQL query to find the most frequently ordered product(s) for each customer.
+
+The result table should have the product_id and product_name for each customer_id who ordered at least one order.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Customers table:
++-------------+-------+
+| customer_id | name  |
++-------------+-------+
+| 1           | Alice |
+| 2           | Bob   |
+| 3           | Tom   |
+| 4           | Jerry |
+| 5           | John  |
++-------------+-------+
+Orders table:
++----------+------------+-------------+------------+
+| order_id | order_date | customer_id | product_id |
++----------+------------+-------------+------------+
+| 1        | 2020-07-31 | 1           | 1          |
+| 2        | 2020-07-30 | 2           | 2          |
+| 3        | 2020-08-29 | 3           | 3          |
+| 4        | 2020-07-29 | 4           | 1          |
+| 5        | 2020-06-10 | 1           | 2          |
+| 6        | 2020-08-01 | 2           | 1          |
+| 7        | 2020-08-01 | 3           | 3          |
+| 8        | 2020-08-03 | 1           | 2          |
+| 9        | 2020-08-07 | 2           | 3          |
+| 10       | 2020-07-15 | 1           | 2          |
++----------+------------+-------------+------------+
+Products table:
++------------+--------------+-------+
+| product_id | product_name | price |
++------------+--------------+-------+
+| 1          | keyboard     | 120   |
+| 2          | mouse        | 80    |
+| 3          | screen       | 600   |
+| 4          | hard disk    | 450   |
++------------+--------------+-------+
+Output: 
++-------------+------------+--------------+
+| customer_id | product_id | product_name |
++-------------+------------+--------------+
+| 1           | 2          | mouse        |
+| 2           | 1          | keyboard     |
+| 2           | 2          | mouse        |
+| 2           | 3          | screen       |
+| 3           | 3          | screen       |
+| 4           | 1          | keyboard     |
++-------------+------------+--------------+
+Explanation: 
+Alice (customer 1) ordered the mouse three times and the keyboard one time, so the mouse is the most frequently ordered product for them.
+Bob (customer 2) ordered the keyboard, the mouse, and the screen one time, so those are the most frequently ordered products for them.
+Tom (customer 3) only ordered the screen (two times), so that is the most frequently ordered product for them.
+Jerry (customer 4) only ordered the keyboard (one time), so that is the most frequently ordered product for them.
+John (customer 5) did not order anything, so we do not include them in the result table.
+Code
+SELECT customer_id, product_id, product_name
+FROM (
+    SELECT O.customer_id, O.product_id, P.product_name, 
+    RANK() OVER (PARTITION BY customer_id ORDER BY COUNT(O.product_id) DESC) AS rnk
+    FROM Orders O
+    JOIN Products P
+    ON O.product_id = P.product_id  
+    GROUP BY customer_id, product_id
+) temp
+WHERE rnk = 1 
+ORDER BY customer_id, product_id
+1587. Bank Account Summary II
+1601. Maximum Number of Achievable Transfer Requests 
+yt;
+
+
+
+====================
+
+
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+1398. Customers Who Bought Products A and B but Not C
+2022-08-27 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Customers
+
++---------------------+---------+
+| Column Name         | Type    |
++---------------------+---------+
+| customer_id         | int     |
+| customer_name       | varchar |
++---------------------+---------+
+customer_id is the primary key for this table.
+customer_name is the name of the customer.
+Table: Orders
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| order_id      | int     |
+| customer_id   | int     |
+| product_name  | varchar |
++---------------+---------+
+order_id is the primary key for this table.
+customer_id is the id of the customer who bought the product "product_name".
+Write an SQL query to report the customer_id and customer_name of customers who bought products “A”, “B” but did not buy the product “C” since we want to recommend them to purchase this product.
+
+Return the result table ordered by customer_id.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Customers table:
++-------------+---------------+
+| customer_id | customer_name |
++-------------+---------------+
+| 1           | Daniel        |
+| 2           | Diana         |
+| 3           | Elizabeth     |
+| 4           | Jhon          |
++-------------+---------------+
+Orders table:
++------------+--------------+---------------+
+| order_id   | customer_id  | product_name  |
++------------+--------------+---------------+
+| 10         |     1        |     A         |
+| 20         |     1        |     B         |
+| 30         |     1        |     D         |
+| 40         |     1        |     C         |
+| 50         |     2        |     A         |
+| 60         |     3        |     A         |
+| 70         |     3        |     B         |
+| 80         |     3        |     D         |
+| 90         |     4        |     C         |
++------------+--------------+---------------+
+Output: 
++-------------+---------------+
+| customer_id | customer_name |
++-------------+---------------+
+| 3           | Elizabeth     |
++-------------+---------------+
+Explanation: Only the customer_id with id 3 bought the product A and B but not the product C.
+Code
+
+
+select a.customer_id, a.customer_name
+from customers a , orders b
+where a.customer_id  = b.customer_id
+group by a.customer_id
+having sum(b.product_name="A") >0 and sum(b.product_name="B") > 0 and sum(b.product_name="C")=0
+
+
+
+===============================
+
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+608. Tree Node
+2022-08-20 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Tree
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| p_id        | int  |
++-------------+------+
+id is the primary key column for this table.
+Each row of this table contains information about the id of a node and the id of its parent node in a tree.
+The given structure is always a valid tree.
+Each node in the tree can be one of three types:
+
+“Leaf”: if the node is a leaf node.
+“Root”: if the node is the root of the tree.
+608-60”Inner”: If the node is neither a leaf node nor a root node. Write an SQL query to report the type of each node in the tree.
+Return the result table ordered by id in ascending order.
+
+The query result format is in the following example.
+
+Example 1:
+
+img
+
+Input: 
+Tree table:
++----+------+
+| id | p_id |
++----+------+
+| 1  | null |
+| 2  | 1    |
+| 3  | 1    |
+| 4  | 2    |
+| 5  | 2    |
++----+------+
+Output: 
++----+-------+
+| id | type  |
++----+-------+
+| 1  | Root  |
+| 2  | Inner |
+| 3  | Leaf  |
+| 4  | Leaf  |
+| 5  | Leaf  |
++----+-------+
+Explanation: 
+Node 1 is the root node because its parent node is null and it has child nodes 2 and 3.
+Node 2 is an inner node because it has parent node 1 and child node 4 and 5.
+Nodes 3, 4, and 5 are leaf nodes because they have parent nodes and they do not have child nodes.
+Example 2:
+
+img
+
+Input: 
+Tree table:
++----+------+
+| id | p_id |
++----+------+
+| 1  | null |
++----+------+
+Output: 
++----+-------+
+| id | type  |
++----+-------+
+| 1  | Root  |
++----+-------+
+Explanation: If there is only one node on the tree, you only need to output its root attributes.
+Code
+SELECT
+    atree.id,
+    IF(ISNULL(atree.p_id),
+        'Root',
+        IF(atree.id IN (SELECT p_id FROM tree), 'Inner','Leaf')) Type
+FROM
+    tree atree
+ORDER BY atree.id
+=================================================================
+
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+1321. Restaurant Growth
+2022-08-27 Medium 
+
+Table: Customer
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| customer_id   | int     |
+| name          | varchar |
+| visited_on    | date    |
+| amount        | int     |
++---------------+---------+
+(customer_id, visited_on) is the primary key for this table.
+This table contains data about customer transactions in a restaurant.
+visited_on is the date on which the customer with ID (customer_id) has visited the restaurant.
+amount is the total paid by a customer.
+You are the restaurant owner and you want to analyze a possible expansion (there will be at least one customer every day).
+
+Write an SQL query to compute the moving average of how much the customer paid in a seven days window (i.e., current day + 6 days before). average_amount should be rounded to two decimal places.
+
+Return result table ordered by visited_on in ascending order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Customer table:
++-------------+--------------+--------------+-------------+
+| customer_id | name         | visited_on   | amount      |
++-------------+--------------+--------------+-------------+
+| 1           | Jhon         | 2019-01-01   | 100         |
+| 2           | Daniel       | 2019-01-02   | 110         |
+| 3           | Jade         | 2019-01-03   | 120         |
+| 4           | Khaled       | 2019-01-04   | 130         |
+| 5           | Winston      | 2019-01-05   | 110         | 
+| 6           | Elvis        | 2019-01-06   | 140         | 
+| 7           | Anna         | 2019-01-07   | 150         |
+| 8           | Maria        | 2019-01-08   | 80          |
+| 9           | Jaze         | 2019-01-09   | 110         | 
+| 1           | Jhon         | 2019-01-10   | 130         | 
+| 3           | Jade         | 2019-01-10   | 150         | 
++-------------+--------------+--------------+-------------+
+Output: 
++--------------+--------------+----------------+
+| visited_on   | amount       | average_amount |
++--------------+--------------+----------------+
+| 2019-01-07   | 860          | 122.86         |
+| 2019-01-08   | 840          | 120            |
+| 2019-01-09   | 840          | 120            |
+| 2019-01-10   | 1000         | 142.86         |
++--------------+--------------+----------------+
+Explanation: 
+1st moving average from 2019-01-01 to 2019-01-07 has an average_amount of (100 + 110 + 120 + 130 + 110 + 140 + 150)/7 = 122.86
+2nd moving average from 2019-01-02 to 2019-01-08 has an average_amount of (110 + 120 + 130 + 110 + 140 + 150 + 80)/7 = 120
+3rd moving average from 2019-01-03 to 2019-01-09 has an average_amount of (120 + 130 + 110 + 140 + 150 + 80 + 110)/7 = 120
+4th moving average from 2019-01-04 to 2019-01-10 has an average_amount of (130 + 110 + 140 + 150 + 80 + 110 + 130 + 150)/7 = 142.86
+Code
+SELECT a.visited_on AS visited_on, SUM(b.day_sum) AS amount,
+       ROUND(AVG(b.day_sum), 2) AS average_amount
+FROM
+  (SELECT visited_on, SUM(amount) AS day_sum FROM Customer GROUP BY visited_on ) a,
+  (SELECT visited_on, SUM(amount) AS day_sum FROM Customer GROUP BY visited_on ) b
+WHERE DATEDIFF(a.visited_on, b.visited_on) BETWEEN 0 AND 6
+GROUP BY a.visited_on
+HAVING COUNT(b.visited_on) = 7
+============================================================================================
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+626. Exchange Seats
+2022-08-20 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Seat
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| student     | varchar |
++-------------+---------+
+id is the primary key column for this table.
+Each row of this table indicates the name and the ID of a student.
+id is a continuous increment.
+Write an SQL query to swap the seat id of every two consecutive students. If the number of students is odd, the id of the last student is not swapped.
+
+Return the result table ordered by id in ascending order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Seat table:
++----+---------+
+| id | student |
++----+---------+
+| 1  | Abbot   |
+| 2  | Doris   |
+| 3  | Emerson |
+| 4  | Green   |
+| 5  | Jeames  |
++----+---------+
+Output: 
++----+---------+
+| id | student |
++----+---------+
+| 1  | Doris   |
+| 2  | Abbot   |
+| 3  | Green   |
+| 4  | Emerson |
+| 5  | Jeames  |
++----+---------+
+Explanation: 
+Note that if the number of students is odd, there is no need to change the last one's seat.
+Code
+SELECT
+    s1.id, COALESCE(s2.student, s1.student) AS student
+FROM
+    seat s1
+        LEFT JOIN
+    seat s2 ON ((s1.id + 1) ^ 1) - 1 = s2.id
+ORDER BY s1.id;
+625. Minimum Factorization
+627. Swap Salary 
+yt
+
+
+==============================================================================
+
+
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+1164. Product Price at a Given Date
+2022-08-26 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Products
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| product_id    | int     |
+| new_price     | int     |
+| change_date   | date    |
++---------------+---------+
+(product_id, change_date) is the primary key of this table.
+Each row of this table indicates that the price of some product was changed to a new price at some date.
+Write an SQL query to find the prices of all products on 2019-08-16. Assume the price of all products before any change is 10.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Products table:
++------------+-----------+-------------+
+| product_id | new_price | change_date |
++------------+-----------+-------------+
+| 1          | 20        | 2019-08-14  |
+| 2          | 50        | 2019-08-14  |
+| 1          | 30        | 2019-08-15  |
+| 1          | 35        | 2019-08-16  |
+| 2          | 65        | 2019-08-17  |
+| 3          | 20        | 2019-08-18  |
++------------+-----------+-------------+
+Output: 
++------------+-------+
+| product_id | price |
++------------+-------+
+| 2          | 50    |
+| 1          | 35    |
+| 3          | 10    |
++------------+-------+
+Code
+select distinct product_id, 10 as price
+from Products
+group by product_id
+having (min(change_date) > "2019-08-16")
+
+union
+
+select p2.product_id, new_price
+from Products p2
+where (p2.product_id, p2.change_date) in
+
+(
+select product_id, max(change_date) as recent_date
+from Products
+where change_date <= "2019-08-16"
+group by product_id
+)
+;
+
+
+==========================================
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+178. Rank Scores
+2020-11-02 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Write a SQL query to rank scores. If there is a tie between two scores, both should have the same ranking. Note that after a tie, the next ranking number should be the next consecutive integer value. In other words, there should be no “holes” between ranks.
+
++----+-------+
+| Id | Score |
++----+-------+
+| 1  | 3.50  |
+| 2  | 3.65  |
+| 3  | 4.00  |
+| 4  | 3.85  |
+| 5  | 4.00  |
+| 6  | 3.65  |
++----+-------+
+For example, given the above Scores table, your query should generate the following report (order by highest score):
+
++-------+---------+
+| score | Rank    |
++-------+---------+
+| 4.00  | 1       |
+| 4.00  | 1       |
+| 3.85  | 2       |
+| 3.65  | 3       |
+| 3.65  | 3       |
+| 3.50  | 4       |
++-------+---------+
+Important Note: For MySQL solutions, to escape reserved words used as column names, you can use an apostrophe before and after the keyword. For example Rank.
+
+Code
+注意Rank
+
+SELECT
+  s.Score AS score,
+  (SELECT COUNT(DISTINCT Score) FROM Scores WHERE Score >= s.Score) AS `Rank`
+FROM Scores AS s
+ORDER BY s.Score DESC;
+177. Nth Highest Salary
+179. Largest Number 
+yt
+
+===============================================================
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+176. Second Highest Salary
+2020-11-02 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Write a SQL query to get the second highest salary from the Employee table.
+
++----+--------+
+| Id | Salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+For example, given the above Employee table, the query should return 200 as the second highest salary. If there is no second highest salary, then the query should return null.
+
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+
+Code
+# Write your MySQL query statement below
+# 防止只有一个record，可以使用IFNULL
+SELECT
+IFNULL(
+(SELECT DISTINCT Salary
+FROM Employee
+ORDER BY Salary DESC
+LIMIT 1 OFFSET 1), NULL)
+AS SecondHighestSalary
+# Write your MySQL query statement below
+SELECT
+(
+SELECT DISTINCT Salary
+FROM Employee
+ORDER BY Salary DESC
+LIMIT 1 OFFSET 1
+)
+AS SecondHighestSalary
+175. Combine Two Tables
+177. Nth Highest Salary 
+yt
+
+
+=========================================
+
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+177. Nth Highest Salary
+2020-11-02 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Write a SQL query to get the nth highest salary from the Employee table.
+
++----+--------+
+| Id | Salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+For example, given the above Employee table, the nth highest salary where n = 2 is 200. If there is no nth highest salary, then the query should return null.
+
++------------------------+
+| getNthHighestSalary(2) |
++------------------------+
+| 200                    |
++------------------------+
+Code
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
+SET N = N - 1;
+RETURN (
+    SELECT DISTINCT Salary
+    FROM Employee
+    ORDER BY Salary DESC
+    LIMIT 1 OFFSET N
+);
+END
+;
+
+====================================
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+180. Consecutive Numbers
+2020-11-08 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Write a SQL query to find all numbers that appear at least three times consecutively.
+
++----+-----+
+| Id | Num |
++----+-----+
+| 1  |  1  |
+| 2  |  1  |
+| 3  |  1  |
+| 4  |  2  |
+| 5  |  1  |
+| 6  |  2  |
+| 7  |  2  |
++----+-----+
+For example, given the above Logs table, 1 is the only number that appears consecutively for at least three times.
+
++-----------------+
+| ConsecutiveNums |
++-----------------+
+| 1               |
++-----------------+
+Code
+Select DISTINCT l1.Num AS ConsecutiveNums
+FROM
+Logs l1,
+Logs l2,
+Logs l3
+WHERE l1.Id = l2.Id-1
+AND l2.Id = l3.Id-1
+AND l1.Num = l2.Num
+AND l2.Num = l3.Num
+179. Largest Number
+181. Employees Earning More Than Their Managers 
+yt
+
+=================================================
+
+
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+184. Department Highest Salary
+2020-11-08 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+The Employee table holds all employees. Every employee has an Id, a salary, and there is also a column for the department Id.
+
++----+-------+--------+--------------+
+| Id | Name  | Salary | DepartmentId |
++----+-------+--------+--------------+
+| 1  | Joe   | 70000  | 1            |
+| 2  | Jim   | 90000  | 1            |
+| 3  | Henry | 80000  | 2            |
+| 4  | Sam   | 60000  | 2            |
+| 5  | Max   | 90000  | 1            |
++----+-------+--------+--------------+
+The Department table holds all departments of the company.
+
++----+----------+
+| Id | Name     |
++----+----------+
+| 1  | IT       |
+| 2  | Sales    |
++----+----------+
+Write a SQL query to find employees who have the highest salary in each of the departments. For the above tables, your SQL query should return the following rows (order of rows does not matter).
+
++------------+----------+--------+
+| Department | Employee | Salary |
++------------+----------+--------+
+| IT         | Max      | 90000  |
+| IT         | Jim      | 90000  |
+| Sales      | Henry    | 80000  |
++------------+----------+--------+
+Explanation:
+
+Max and Jim both have the highest salary in the IT department and Henry has the highest salary in the Sales department.
+
+Code
+出现相同的最大工资，需要都保留，max 只会返回一个值
+
+SELECT
+    Department.name AS Department,
+    Employee.name AS Employee,
+    Salary
+FROM
+    Employee
+    JOIN Department
+    ON Employee.DepartmentId = Department.Id
+WHERE
+(Employee.DepartmentId , Salary) IN
+(
+    SELECT DepartmentId, MAX(Salary)
+    FROM Employee
+    GROUP BY DepartmentId
+)
+183. Customers Who Never Order
+185. Department Top Three Salaries 
+yt
+
+
+=============================================
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+570. Managers with at Least 5 Direct Reports
+2022-08-17 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Employee
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| name        | varchar |
+| department  | varchar |
+| managerId   | int     |
++-------------+---------+
+id is the primary key column for this table.
+Each row of this table indicates the name of an employee, their department, and the id of their manager.
+If managerId is null, then the employee does not have a manager.
+No employee will be the manager of themself.
+ 
+Write an SQL query to report the managers with at least five direct reports.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Employee table:
++-----+-------+------------+-----------+
+| id  | name  | department | managerId |
++-----+-------+------------+-----------+
+| 101 | John  | A          | None      |
+| 102 | Dan   | A          | 101       |
+| 103 | James | A          | 101       |
+| 104 | Amy   | A          | 101       |
+| 105 | Anne  | A          | 101       |
+| 106 | Ron   | B          | 101       |
++-----+-------+------------+-----------+
+Output: 
++------+
+| name |
++------+
+| John |
++------+
+
+Code
+SELECT
+    Name
+FROM
+    Employee AS t1 JOIN
+    (SELECT
+        ManagerId
+    FROM
+        Employee
+    GROUP BY ManagerId
+    HAVING COUNT(ManagerId) >= 5) AS t2
+    ON t1.Id = t2.ManagerId
+;
+569. Median Employee Salary
+571. Find Median Given Frequency of Numbers 
+yt
+
+================================================
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+2228. Users With Two Purchases Within Seven Days
+2022-09-04 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Purchases
+
++---------------+------+
+| Column Name   | Type |
++---------------+------+
+| purchase_id   | int  |
+| user_id       | int  |
+| purchase_date | date |
++---------------+------+
+purchase_id is the primary key for this table.
+This table contains logs of the dates that users purchased from a certain retailer.
+Write an SQL query to report the IDs of the users that made any two purchases at most 7 days apart.
+
+Return the result table ordered by user_id.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Purchases table:
++-------------+---------+---------------+
+| purchase_id | user_id | purchase_date |
++-------------+---------+---------------+
+| 4           | 2       | 2022-03-13    |
+| 1           | 5       | 2022-02-11    |
+| 3           | 7       | 2022-06-19    |
+| 6           | 2       | 2022-03-20    |
+| 5           | 7       | 2022-06-19    |
+| 2           | 2       | 2022-06-08    |
++-------------+---------+---------------+
+Output: 
++---------+
+| user_id |
++---------+
+| 2       |
+| 7       |
++---------+
+Explanation: 
+User 2 had two purchases on 2022-03-13 and 2022-03-20. Since the second purchase is within 7 days of the first purchase, we add their ID.
+User 5 had only 1 purchase.
+User 7 had two purchases on the same day so we add their ID.
+Code
+select  distinct user_id
+from
+( select user_id, purchase_date,
+lag(purchase_date) over (partition by user_id order by purchase_date) prev_purchase_date
+from purchases) t
+where datediff(purchase_date, prev_purchase_date) <=7
+2205. The Number of Users That Are Eligible for Discount
+2230. The Users That Are Eligible for Discount 
+yt
+
+
+ ===============================================
+
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+1811. Find Interview Candidates
+2022-09-03 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Contests
+
++--------------+------+
+| Column Name  | Type |
++--------------+------+
+| contest_id   | int  |
+| gold_medal   | int  |
+| silver_medal | int  |
+| bronze_medal | int  |
++--------------+------+
+contest_id is the primary key for this table.
+This table contains the LeetCode contest ID and the user IDs of the gold, silver, and bronze medalists.
+It is guaranteed that any consecutive contests have consecutive IDs and that no ID is skipped.
+Table: Users
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| user_id     | int     |
+| mail        | varchar |
+| name        | varchar |
++-------------+---------+
+user_id is the primary key for this table.
+This table contains information about the users.
+Write an SQL query to report the name and the mail of all interview candidates. A user is an interview candidate if at least one of these two conditions is true:
+
+The user won any medal in three or more consecutive contests. The user won the gold medal in three or more different contests (not necessarily consecutive). Return the result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Contests table:
++------------+------------+--------------+--------------+
+| contest_id | gold_medal | silver_medal | bronze_medal |
++------------+------------+--------------+--------------+
+| 190        | 1          | 5            | 2            |
+| 191        | 2          | 3            | 5            |
+| 192        | 5          | 2            | 3            |
+| 193        | 1          | 3            | 5            |
+| 194        | 4          | 5            | 2            |
+| 195        | 4          | 2            | 1            |
+| 196        | 1          | 5            | 2            |
++------------+------------+--------------+--------------+
+Users table:
++---------+--------------------+-------+
+| user_id | mail               | name  |
++---------+--------------------+-------+
+| 1       | sarah@leetcode.com | Sarah |
+| 2       | bob@leetcode.com   | Bob   |
+| 3       | alice@leetcode.com | Alice |
+| 4       | hercy@leetcode.com | Hercy |
+| 5       | quarz@leetcode.com | Quarz |
++---------+--------------------+-------+
+Output: 
++-------+--------------------+
+| name  | mail               |
++-------+--------------------+
+| Sarah | sarah@leetcode.com |
+| Bob   | bob@leetcode.com   |
+| Alice | alice@leetcode.com |
+| Quarz | quarz@leetcode.com |
++-------+--------------------+
+Explanation: 
+Sarah won 3 gold medals (190, 193, and 196), so we include her in the result table.
+Bob won a medal in 3 consecutive contests (190, 191, and 192), so we include him in the result table.
+    - Note that he also won a medal in 3 other consecutive contests (194, 195, and 196).
+Alice won a medal in 3 consecutive contests (191, 192, and 193), so we include her in the result table.
+Quarz won a medal in 5 consecutive contests (190, 191, 192, 193, and 194), so we include them in the result table.
+Code
+with t0 as (
+    select gold_medal as user, contest_id 
+    from contests 
+    union all 
+    select silver_medal as user, contest_id 
+    from contests 
+    union all 
+    select bronze_medal as user, contest_id 
+    from contests 
+)
+, t1 as (
+    select user, contest_id, row_number() over(partition by user order by contest_id) as rn 
+    from t0 
+)
+, t2 as (
+    select user as user_id -- consecutive medal winners
+    from t1 
+    group by user, contest_id - rn 
+    having count(*) >= 3 -- replace 3 with any number to solve the N problem
+    union all
+    select gold_medal as user_id  -- gold medal winners
+    from contests 
+    group by gold_medal 
+    having count(*) >= 3
+)
+select distinct u.name, u.mail 
+from t2 
+inner join users u
+on t2.user_id = u.user_id
+1809. Ad-Free Sessions
+1821. Find Customers With Positive Revenue this Year 
+yt
+
+
+====================================
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+1149. Article Views II
+2022-08-26 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Views
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| article_id    | int     |
+| author_id     | int     |
+| viewer_id     | int     |
+| view_date     | date    |
++---------------+---------+
+There is no primary key for this table, it may have duplicate rows.
+Each row of this table indicates that some viewer viewed an article (written by some author) on some date. 
+Note that equal author_id and viewer_id indicate the same person.
+Write an SQL query to find all the people who viewed more than one article on the same date.
+
+Return the result table sorted by id in ascending order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Views table:
++------------+-----------+-----------+------------+
+| article_id | author_id | viewer_id | view_date  |
++------------+-----------+-----------+------------+
+| 1          | 3         | 5         | 2019-08-01 |
+| 3          | 4         | 5         | 2019-08-01 |
+| 1          | 3         | 6         | 2019-08-02 |
+| 2          | 7         | 7         | 2019-08-01 |
+| 2          | 7         | 6         | 2019-08-02 |
+| 4          | 7         | 1         | 2019-07-22 |
+| 3          | 4         | 4         | 2019-07-21 |
+| 3          | 4         | 4         | 2019-07-21 |
++------------+-----------+-----------+------------+
+Output: 
++------+
+| id   |
++------+
+| 5    |
+| 6    |
++------+
+Code
+SELECT DISTINCT viewer_id AS id
+FROM Views
+GROUP BY viewer_id, view_date
+HAVING COUNT(DISTINCT article_id) > 1
+ORDER BY 1
+1148. Article Views I
+1158. Market Analysis I 
+yt
+=======================================
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+2394. Employees With Deductions
+2022-09-05 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Employees
+
++--------------+------+
+| Column Name  | Type |
++--------------+------+
+| employee_id  | int  |
+| needed_hours | int  |
++--------------+------+
+employee_id is the primary key for this table.
+Each row contains the id of an employee and the minimum number of hours needed for them to work to get their salary.
+Table: Logs
+
++-------------+----------+
+| Column Name | Type     |
++-------------+----------+
+| employee_id | int      |
+| in_time     | datetime |
+| out_time    | datetime |
++-------------+----------+
+(employee_id, in_time, out_time) is the primary key for this table.
+Each row of this table shows the time stamps for an employee. in_time is the time the employee started to work, and out_time is the time the employee ended work.
+All the times are in October 2022. out_time can be one day after in_time which means the employee worked after the midnight.
+In a company, each employee must work a certain number of hours every month. Employees work in sessions. The number of hours an employee worked can be calculated from the sum of the number of minutes the employee worked in all of their sessions. The number of minutes in each session is rounded up.
+
+For example, if the employee worked for 51 minutes and 2 seconds in a session, we consider it 52 minutes. Write an SQL query to report the IDs of the employees that will be deducted. In other words, report the IDs of the employees that did not work the needed hours.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Employees table:
++-------------+--------------+
+| employee_id | needed_hours |
++-------------+--------------+
+| 1           | 20           |
+| 2           | 12           |
+| 3           | 2            |
++-------------+--------------+
+Logs table:
++-------------+---------------------+---------------------+
+| employee_id | in_time             | out_time            |
++-------------+---------------------+---------------------+
+| 1           | 2022-10-01 09:00:00 | 2022-10-01 17:00:00 |
+| 1           | 2022-10-06 09:05:04 | 2022-10-06 17:09:03 |
+| 1           | 2022-10-12 23:00:00 | 2022-10-13 03:00:01 |
+| 2           | 2022-10-29 12:00:00 | 2022-10-29 23:58:58 |
++-------------+---------------------+---------------------+
+Output: 
++-------------+
+| employee_id |
++-------------+
+| 2           |
+| 3           |
++-------------+
+Explanation: 
+Employee 1:
+ - Worked for three sessions:
+    - On 2022-10-01, they worked for 8 hours.
+    - On 2022-10-06, they worked for 8 hours and 4 minutes.
+    - On 2022-10-12, they worked for 4 hours and 1 minute. Note that they worked through midnight.
+ - Employee 1 worked a total of 20 hours and 5 minutes across sessions and will not be deducted.
+Employee 2:
+ - Worked for one session:
+    - On 2022-10-29, they worked for 7 hours and 59 minutes.
+ - Employee 2 did not work their hours and will be deducted.
+Employee 3:
+ - Did not work any session.
+ - Employee 3 did not work their hours and will be deducted.
+Code
+SELECT
+  E.employee_id
+FROM
+  Employees E
+  LEFT JOIN Logs L ON E.employee_id = L.employee_id
+GROUP BY
+  E.employee_id,
+  E.needed_hours
+HAVING
+  (SUM(CEIL(IFNULL(TIMESTAMPDIFF(SECOND, L.in_time, L.out_time), 0) / 60)) / 60) < E.needed_hours;
+2388. Change Null Values in a Table to the Previous Value
+2402. Meeting Rooms III 
+yt
+--===============================================
+
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+1613. Find the Missing IDs
+2022-08-27 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Customers
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| customer_id   | int     |
+| customer_name | varchar |
++---------------+---------+
+customer_id is the primary key for this table.
+Each row of this table contains the name and the id customer.
+Write an SQL query to find the missing customer IDs. The missing IDs are ones that are not in the Customers table but are in the range between 1 and the maximum customer_id present in the table.
+
+Notice that the maximum customer_id will not exceed 100.
+
+Return the result table ordered by ids in ascending order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Customers table:
++-------------+---------------+
+| customer_id | customer_name |
++-------------+---------------+
+| 1           | Alice         |
+| 4           | Bob           |
+| 5           | Charlie       |
++-------------+---------------+
+Output: 
++-----+
+| ids |
++-----+
+| 2   |
+| 3   |
++-----+
+Explanation: 
+The maximum customer_id present in the table is 5, so in the range [1,5], IDs 2 and 3 are missing from the table.
+Code
+WITH RECURSIVE id_seq AS (
+    SELECT 1 as continued_id
+    UNION 
+    SELECT continued_id + 1
+    FROM id_seq
+    WHERE continued_id < (SELECT MAX(customer_id) FROM Customers) 
+)
+
+SELECT continued_id AS ids
+FROM id_seq
+WHERE continued_id NOT IN (SELECT customer_id FROM Customers)  
+;
+
+=============================================================
+
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+1070. Product Sales Analysis III
+2022-08-20 Medium 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Sales
+
++-------------+-------+
+| Column Name | Type  |
++-------------+-------+
+| sale_id     | int   |
+| product_id  | int   |
+| year        | int   |
+| quantity    | int   |
+| price       | int   |
++-------------+-------+
+(sale_id, year) is the primary key of this table.
+product_id is a foreign key to Product table.
+Each row of this table shows a sale on the product product_id in a certain year.
+Note that the price is per unit.
+Table: Product
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| product_id   | int     |
+| product_name | varchar |
++--------------+---------+
+product_id is the primary key of this table.
+Each row of this table indicates the product name of each product.
+Write an SQL query that selects the product id, year, quantity, and price for the first year of every product sold.
+
+Return the resulting table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Sales table:
++---------+------------+------+----------+-------+
+| sale_id | product_id | year | quantity | price |
++---------+------------+------+----------+-------+ 
+| 1       | 100        | 2008 | 10       | 5000  |
+| 2       | 100        | 2009 | 12       | 5000  |
+| 7       | 200        | 2011 | 15       | 9000  |
++---------+------------+------+----------+-------+
+Product table:
++------------+--------------+
+| product_id | product_name |
++------------+--------------+
+| 100        | Nokia        |
+| 200        | Apple        |
+| 300        | Samsung      |
++------------+--------------+
+Output: 
++------------+------------+----------+-------+
+| product_id | first_year | quantity | price |
++------------+------------+----------+-------+ 
+| 100        | 2008       | 10       | 5000  |
+| 200        | 2011       | 15       | 9000  |
++------------+------------+----------+-------+
+Code
+SELECT product_id, year AS first_year, quantity, price
+FROM Sales
+WHERE (product_id, year) IN (
+SELECT product_id, MIN(year) as year
+FROM Sales
+GROUP BY product_id) ;
+1069. Product Sales Analysis II
+1075. Project Employees I 
+yt
+
+
+===============================
+
+
