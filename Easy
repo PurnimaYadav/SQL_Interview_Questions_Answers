@@ -1,0 +1,973 @@
+Problem
+Table: Sales
+
++-------------+-------+
+| Column Name | Type  |
++-------------+-------+
+| sale_id     | int   |
+| product_id  | int   |
+| year        | int   |
+| quantity    | int   |
+| price       | int   |
++-------------+-------+
+(sale_id, year) is the primary key of this table.
+product_id is a foreign key to Product table.
+Each row of this table shows a sale on the product product_id in a certain year.
+Note that the price is per unit.
+Table: Product
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| product_id   | int     |
+| product_name | varchar |
++--------------+---------+
+product_id is the primary key of this table.
+Each row of this table indicates the product name of each product.
+Write an SQL query that reports the product_name, year, and price for each sale_id in the Sales table.
+
+Return the resulting table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Sales table:
++---------+------------+------+----------+-------+
+| sale_id | product_id | year | quantity | price |
++---------+------------+------+----------+-------+ 
+| 1       | 100        | 2008 | 10       | 5000  |
+| 2       | 100        | 2009 | 12       | 5000  |
+| 7       | 200        | 2011 | 15       | 9000  |
++---------+------------+------+----------+-------+
+Product table:
++------------+--------------+
+| product_id | product_name |
++------------+--------------+
+| 100        | Nokia        |
+| 200        | Apple        |
+| 300        | Samsung      |
++------------+--------------+
+Output: 
++--------------+-------+-------+
+| product_name | year  | price |
++--------------+-------+-------+
+| Nokia        | 2008  | 5000  |
+| Nokia        | 2009  | 5000  |
+| Apple        | 2011  | 9000  |
++--------------+-------+-------+
+Explanation: 
+From sale_id = 1, we can conclude that Nokia was sold for 5000 in the year 2008.
+From sale_id = 2, we can conclude that Nokia was sold for 5000 in the year 2009.
+From sale_id = 7, we can conclude that Apple was sold for 9000 in the year 2011.
+Code
+SELECT DISTINCT 
+    P.product_name, S.year, S.price 
+FROM 
+    (SELECT DISTINCT product_id, year, price FROM Sales) S
+INNER JOIN
+    Product AS P
+USING (product_id);
+
+
+
+Quest 2: easy
+1069. Product Sales Analysis II
+
++-------------+-------+
+| Column Name | Type  |
++-------------+-------+
+| sale_id     | int   |
+| product_id  | int   |
+| year        | int   |
+| quantity    | int   |
+| price       | int   |
++-------------+-------+
+(sale_id, year) is the primary key of this table.
+product_id is a foreign key to Product table.
+Each row of this table shows a sale on the product product_id in a certain year.
+Note that the price is per unit.
+Table: Product
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| product_id   | int     |
+| product_name | varchar |
++--------------+---------+
+product_id is the primary key of this table.
+Each row of this table indicates the product name of each product.
+Write an SQL query that reports the total quantity sold for every product id.
+
+Return the resulting table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Sales table:
++---------+------------+------+----------+-------+
+| sale_id | product_id | year | quantity | price |
++---------+------------+------+----------+-------+ 
+| 1       | 100        | 2008 | 10       | 5000  |
+| 2       | 100        | 2009 | 12       | 5000  |
+| 7       | 200        | 2011 | 15       | 9000  |
++---------+------------+------+----------+-------+
+Product table:
++------------+--------------+
+| product_id | product_name |
++------------+--------------+
+| 100        | Nokia        |
+| 200        | Apple        |
+| 300        | Samsung      |
++------------+--------------+
+Output: 
++--------------+----------------+
+| product_id   | total_quantity |
++--------------+----------------+
+| 100          | 22             |
+| 200          | 15             |
++--------------+----------------+
+Code
+SELECT product_id, SUM(quantity) AS total_quantity
+FROM Sales
+GROUP BY product_id
+
+
+
+3:
+
+Game Play Analysis I
+2022-06-09 Easy 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Activity
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| player_id    | int     |
+| device_id    | int     |
+| event_date   | date    |
+| games_played | int     |
++--------------+---------+
+(player_id, event_date) is the primary key of this table.
+This table shows the activity of players of some games.
+Each row is a record of a player who logged in and played a number of games (possibly 0) before logging out on someday using some device.
+Write an SQL query to report the first login date for each player.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Activity table:
++-----------+-----------+------------+--------------+
+| player_id | device_id | event_date | games_played |
++-----------+-----------+------------+--------------+
+| 1         | 2         | 2016-03-01 | 5            |
+| 1         | 2         | 2016-05-02 | 6            |
+| 2         | 3         | 2017-06-25 | 1            |
+| 3         | 1         | 2016-03-02 | 0            |
+| 3         | 4         | 2018-07-03 | 5            |
++-----------+-----------+------------+--------------+
+Output: 
++-----------+-------------+
+| player_id | first_login |
++-----------+-------------+
+| 1         | 2016-03-01  |
+| 2         | 2017-06-25  |
+| 3         | 2016-03-02  |
++-----------+-------------+
+Code
+# Write your MySQL query statement below
+SELECT player_id, event_date as first_login
+FROM activity 
+WHERE (player_id, event_date) 
+IN (
+    SELECT player_id, MIN(event_date)
+    FROM activity 
+    GROUP BY player_id
+) 
+
+-----------------------
+
+4:
+1511. Customer Order Frequency
+2022-08-27 Easy 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Customers
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| customer_id   | int     |
+| name          | varchar |
+| country       | varchar |
++---------------+---------+
+customer_id is the primary key for this table.
+This table contains information about the customers in the company.
+Table: Product
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| product_id    | int     |
+| description   | varchar |
+| price         | int     |
++---------------+---------+
+product_id is the primary key for this table.
+This table contains information on the products in the company.
+price is the product cost.
+Table: Orders
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| order_id      | int     |
+| customer_id   | int     |
+| product_id    | int     |
+| order_date    | date    |
+| quantity      | int     |
++---------------+---------+
+order_id is the primary key for this table.
+This table contains information on customer orders.
+customer_id is the id of the customer who bought "quantity" products with id "product_id".
+Order_date is the date in format ('YYYY-MM-DD') when the order was shipped.
+Write an SQL query to report the customer_id and customer_name of customers who have spent at least $100 in each month of June and July 2020.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Customers table:
++--------------+-----------+-------------+
+| customer_id  | name      | country     |
++--------------+-----------+-------------+
+| 1            | Winston   | USA         |
+| 2            | Jonathan  | Peru        |
+| 3            | Moustafa  | Egypt       |
++--------------+-----------+-------------+
+Product table:
++--------------+-------------+-------------+
+| product_id   | description | price       |
++--------------+-------------+-------------+
+| 10           | LC Phone    | 300         |
+| 20           | LC T-Shirt  | 10          |
+| 30           | LC Book     | 45          |
+| 40           | LC Keychain | 2           |
++--------------+-------------+-------------+
+Orders table:
++--------------+-------------+-------------+-------------+-----------+
+| order_id     | customer_id | product_id  | order_date  | quantity  |
++--------------+-------------+-------------+-------------+-----------+
+| 1            | 1           | 10          | 2020-06-10  | 1         |
+| 2            | 1           | 20          | 2020-07-01  | 1         |
+| 3            | 1           | 30          | 2020-07-08  | 2         |
+| 4            | 2           | 10          | 2020-06-15  | 2         |
+| 5            | 2           | 40          | 2020-07-01  | 10        |
+| 6            | 3           | 20          | 2020-06-24  | 2         |
+| 7            | 3           | 30          | 2020-06-25  | 2         |
+| 9            | 3           | 30          | 2020-05-08  | 3         |
++--------------+-------------+-------------+-------------+-----------+
+Output: 
++--------------+------------+
+| customer_id  | name       |  
++--------------+------------+
+| 1            | Winston    |
++--------------+------------+
+Explanation: 
+Winston spent $300 (300 * 1) in June and $100 ( 10 * 1 + 45 * 2) in July 2020.
+Jonathan spent $600 (300 * 2) in June and $20 ( 2 * 10) in July 2020.
+Moustafa spent $110 (10 * 2 + 45 * 2) in June and $0 in July 2020.
+
+Code
+
+SELECT customer_id, name
+FROM Customers JOIN Orders USING(customer_id) 
+    JOIN Product USING(product_id)
+GROUP BY customer_id
+HAVING SUM(IF(LEFT(order_date, 7) = '2020-06', quantity, 0) * price) >= 100
+    AND SUM(IF(LEFT(order_date, 7) = '2020-07', quantity, 0) * price) >= 100
+-------------------------------------
+
+5.
+
+1327. List the Products Ordered in a Period
+2022-08-27 Easy 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Products
+
++------------------+---------+
+| Column Name      | Type    |
++------------------+---------+
+| product_id       | int     |
+| product_name     | varchar |
+| product_category | varchar |
++------------------+---------+
+product_id is the primary key for this table.
+This table contains data about the company's products.
+Table: Orders
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| product_id    | int     |
+| order_date    | date    |
+| unit          | int     |
++---------------+---------+
+There is no primary key for this table. It may have duplicate rows.
+product_id is a foreign key to the Products table.
+unit is the number of products ordered in order_date.
+Write an SQL query to get the names of products that have at least 100 units ordered in February 2020 and their amount.
+
+Return result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Products table:
++-------------+-----------------------+------------------+
+| product_id  | product_name          | product_category |
++-------------+-----------------------+------------------+
+| 1           | Leetcode Solutions    | Book             |
+| 2           | Jewels of Stringology | Book             |
+| 3           | HP                    | Laptop           |
+| 4           | Lenovo                | Laptop           |
+| 5           | Leetcode Kit          | T-shirt          |
++-------------+-----------------------+------------------+
+Orders table:
++--------------+--------------+----------+
+| product_id   | order_date   | unit     |
++--------------+--------------+----------+
+| 1            | 2020-02-05   | 60       |
+| 1            | 2020-02-10   | 70       |
+| 2            | 2020-01-18   | 30       |
+| 2            | 2020-02-11   | 80       |
+| 3            | 2020-02-17   | 2        |
+| 3            | 2020-02-24   | 3        |
+| 4            | 2020-03-01   | 20       |
+| 4            | 2020-03-04   | 30       |
+| 4            | 2020-03-04   | 60       |
+| 5            | 2020-02-25   | 50       |
+| 5            | 2020-02-27   | 50       |
+| 5            | 2020-03-01   | 50       |
++--------------+--------------+----------+
+Output: 
++--------------------+---------+
+| product_name       | unit    |
++--------------------+---------+
+| Leetcode Solutions | 130     |
+| Leetcode Kit       | 100     |
++--------------------+---------+
+Explanation: 
+Products with product_id = 1 is ordered in February a total of (60 + 70) = 130.
+Products with product_id = 2 is ordered in February a total of 80.
+Products with product_id = 3 is ordered in February a total of (2 + 3) = 5.
+Products with product_id = 4 was not ordered in February 2020.
+Products with product_id = 5 is ordered in February a total of (50 + 50) = 100.
+Code
+select product_name,sum(unit) as unit
+from Products a
+left join Orders b on a.product_id = b.product_id
+where month(order_date) = 2 and year(order_date) = '2020'
+group by a.product_id
+Having unit >=100
+
+--------------------------------
+
+6
+1082. Sales Analysis I
+2022-08-26 Easy 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Product
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| product_id   | int     |
+| product_name | varchar |
+| unit_price   | int     |
++--------------+---------+
+product_id is the primary key of this table.
+Each row of this table indicates the name and the price of each product.
+Table: Sales
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| seller_id   | int     |
+| product_id  | int     |
+| buyer_id    | int     |
+| sale_date   | date    |
+| quantity    | int     |
+| price       | int     |
++-------------+---------+
+This table has no primary key, it can have repeated rows.
+product_id is a foreign key to the Product table.
+Each row of this table contains some information about one sale.
+Write an SQL query that reports the best seller by total sales price, If there is a tie, report them all.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Product table:
++------------+--------------+------------+
+| product_id | product_name | unit_price |
++------------+--------------+------------+
+| 1          | S8           | 1000       |
+| 2          | G4           | 800        |
+| 3          | iPhone       | 1400       |
++------------+--------------+------------+
+Sales table:
++-----------+------------+----------+------------+----------+-------+
+| seller_id | product_id | buyer_id | sale_date  | quantity | price |
++-----------+------------+----------+------------+----------+-------+
+| 1         | 1          | 1        | 2019-01-21 | 2        | 2000  |
+| 1         | 2          | 2        | 2019-02-17 | 1        | 800   |
+| 2         | 2          | 3        | 2019-06-02 | 1        | 800   |
+| 3         | 3          | 4        | 2019-05-13 | 2        | 2800  |
++-----------+------------+----------+------------+----------+-------+
+Output: 
++-------------+
+| seller_id   |
++-------------+
+| 1           |
+| 3           |
++-------------+
+Explanation: Both sellers with id 1 and 3 sold products with the most total price of 2800.
+Code
+SELECT seller_id
+FROM Sales
+GROUP BY seller_id
+HAVING SUM(PRICE) >= all (
+    SELECT SUM(PRICE)
+    FROM Sales
+    GROUP BY seller_id
+)
+-----=============================================================================================================================
+
+7:
+607. Sales Person
+2022-08-20 Easy 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: SalesPerson
+
++-----------------+---------+
+| Column Name     | Type    |
++-----------------+---------+
+| sales_id        | int     |
+| name            | varchar |
+| salary          | int     |
+| commission_rate | int     |
+| hire_date       | date    |
++-----------------+---------+
+sales_id is the primary key column for this table.
+Each row of this table indicates the name and the ID of a salesperson alongside their salary, commission rate, and hire date.
+Table: Company
+
++————-+———+ | Column Name | Type | +————-+———+ | com_id | int | | name | varchar | | city | varchar | +————-+———+ com_id is the primary key column for this table. Each row of this table indicates the name and the ID of a company and the city in which the company is located.
+
+Table: Orders
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| order_id    | int  |
+| order_date  | date |
+| com_id      | int  |
+| sales_id    | int  |
+| amount      | int  |
++-------------+------+
+order_id is the primary key column for this table.
+com_id is a foreign key to com_id from the Company table.
+sales_id is a foreign key to sales_id from the SalesPerson table.
+Each row of this table contains information about one order. This includes the ID of the company, the ID of the salesperson, the date of the order, and the amount paid.
+Write an SQL query to report the names of all the salespersons who did not have any orders related to the company with the name “RED”.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+SalesPerson table:
++----------+------+--------+-----------------+------------+
+| sales_id | name | salary | commission_rate | hire_date  |
++----------+------+--------+-----------------+------------+
+| 1        | John | 100000 | 6               | 4/1/2006   |
+| 2        | Amy  | 12000  | 5               | 5/1/2010   |
+| 3        | Mark | 65000  | 12              | 12/25/2008 |
+| 4        | Pam  | 25000  | 25              | 1/1/2005   |
+| 5        | Alex | 5000   | 10              | 2/3/2007   |
++----------+------+--------+-----------------+------------+
+Company table:
++--------+--------+----------+
+| com_id | name   | city     |
++--------+--------+----------+
+| 1      | RED    | Boston   |
+| 2      | ORANGE | New York |
+| 3      | YELLOW | Boston   |
+| 4      | GREEN  | Austin   |
++--------+--------+----------+
+Orders table:
++----------+------------+--------+----------+--------+
+| order_id | order_date | com_id | sales_id | amount |
++----------+------------+--------+----------+--------+
+| 1        | 1/1/2014   | 3      | 4        | 10000  |
+| 2        | 2/1/2014   | 4      | 5        | 5000   |
+| 3        | 3/1/2014   | 1      | 1        | 50000  |
+| 4        | 4/1/2014   | 1      | 4        | 25000  |
++----------+------------+--------+----------+--------+
+Output: 
++------+
+| name |
++------+
+| Amy  |
+| Mark |
+| Alex |
++------+
+Explanation: 
+According to orders 3 and 4 in the Orders table, it is easy to tell that only salesperson John and Pam have sales to company RED, so we report all the other names in the table salesperson.
+Code
+SELECT
+    s.name
+FROM
+    salesperson s
+WHERE
+    s.sales_id NOT IN (SELECT
+            o.sales_id
+        FROM
+            orders o
+                LEFT JOIN
+            company c ON o.com_id = c.com_id
+        WHERE
+            c.name = 'RED')
+;
+
+========================================================
+
+2072. The Winner University
+2022-09-04 Easy 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: NewYork
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| student_id  | int  |
+| score       | int  |
++-------------+------+
+student_id is the primary key for this table.
+Each row contains information about the score of one student from New York University in an exam.
+Table: California
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| student_id  | int  |
+| score       | int  |
++-------------+------+
+student_id is the primary key for this table.
+Each row contains information about the score of one student from California University in an exam.
+There is a competition between New York University and California University. The competition is held between the same number of students from both universities. The university that has more excellent students wins the competition. If the two universities have the same number of excellent students, the competition ends in a draw.
+
+An excellent student is a student that scored 90% or more in the exam.
+
+Write an SQL query to report:
+
+“New York University” if New York University wins the competition. “California University” if California University wins the competition. “No Winner” if the competition ends in a draw. The query result format is in the following example.
+
+Example 1:
+
+Input: 
+NewYork table:
++------------+-------+
+| student_id | score |
++------------+-------+
+| 1          | 90    |
+| 2          | 87    |
++------------+-------+
+California table:
++------------+-------+
+| student_id | score |
++------------+-------+
+| 2          | 89    |
+| 3          | 88    |
++------------+-------+
+Output: 
++---------------------+
+| winner              |
++---------------------+
+| New York University |
++---------------------+
+Explanation:
+New York University has 1 excellent student, and California University has 0 excellent students.
+Example 2:
+
+Input: 
+NewYork table:
++------------+-------+
+| student_id | score |
++------------+-------+
+| 1          | 89    |
+| 2          | 88    |
++------------+-------+
+California table:
++------------+-------+
+| student_id | score |
++------------+-------+
+| 2          | 90    |
+| 3          | 87    |
++------------+-------+
+Output: 
++-----------------------+
+| winner                |
++-----------------------+
+| California University |
++-----------------------+
+Explanation:
+New York University has 0 excellent students, and California University has 1 excellent student.
+Example 3:
+
+Input: 
+NewYork table:
++------------+-------+
+| student_id | score |
++------------+-------+
+| 1          | 89    |
+| 2          | 90    |
++------------+-------+
+California table:
++------------+-------+
+| student_id | score |
++------------+-------+
+| 2          | 87    |
+| 3          | 99    |
++------------+-------+
+Output: 
++-----------+
+| winner    |
++-----------+
+| No Winner |
++-----------+
+Explanation:
+Both New York University and California University have 1 excellent student.
+Code
+SELECT (CASE 
+            WHEN (SELECT COUNT(score) FROM NewYork WHERE score >= 90) > (SELECT COUNT(score) FROM California WHERE score >= 90) THEN 'New York University'
+            WHEN (SELECT COUNT(score) FROM NewYork WHERE score >= 90) < (SELECT COUNT(score) FROM California WHERE score >= 90) THEN 'California University'
+            ELSE 'No Winner' END) AS WINNER
+;
+
+================================
+
+
+8:
+197. Rising Temperature
+2020-11-10 Easy 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Weather
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| recordDate    | date    |
+| temperature   | int     |
++---------------+---------+
+id is the primary key for this table. This table contains information about the temperature in a certain day.
+
+Write an SQL query to find all dates’ id with higher temperature compared to its previous dates (yesterday).
+
+Return the result table in any order.
+
+The query result format is in the following example:
+
+Weather
+
++----+------------+-------------+
+| id | recordDate | Temperature |
++----+------------+-------------+
+| 1  | 2015-01-01 | 10          |
+| 2  | 2015-01-02 | 25          |
+| 3  | 2015-01-03 | 20          |
+| 4  | 2015-01-04 | 30          |
++----+------------+-------------+
+Result table:
+
++----+
+| id |
++----+
+| 2  |
+| 4  |
++----+
+
+In 2015-01-02, temperature was higher than the previous day (10 -> 25).
+In 2015-01-04, temperature was higher than the previous day (30 -> 20).
+Code
+SELECT w1.id AS Id
+FROM weather w1
+JOIN weather w2
+ON DATEDIFF(w1.recordDate, w2.recordDate) = 1
+AND w1.Temperature > w2.Temperature
+
+==========================
+
+
+1179. Reformat Department Table
+2022-08-26 Easy 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Department
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| revenue     | int     |
+| month       | varchar |
++-------------+---------+
+(id, month) is the primary key of this table.
+The table has information about the revenue of each department per month.
+The month has values in ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].
+Write an SQL query to reformat the table such that there is a department id column and a revenue column for each month.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Department table:
++------+---------+-------+
+| id   | revenue | month |
++------+---------+-------+
+| 1    | 8000    | Jan   |
+| 2    | 9000    | Jan   |
+| 3    | 10000   | Feb   |
+| 1    | 7000    | Feb   |
+| 1    | 6000    | Mar   |
++------+---------+-------+
+Output: 
++------+-------------+-------------+-------------+-----+-------------+
+| id   | Jan_Revenue | Feb_Revenue | Mar_Revenue | ... | Dec_Revenue |
++------+-------------+-------------+-------------+-----+-------------+
+| 1    | 8000        | 7000        | 6000        | ... | null        |
+| 2    | 9000        | null        | null        | ... | null        |
+| 3    | null        | 10000       | null        | ... | null        |
++------+-------------+-------------+-------------+-----+-------------+
+Explanation: The revenue from Apr to Dec is null.
+Note that the result table has 13 columns (1 for the department id + 12 for the months).
+Code
+select id, 
+	sum(case when month = 'jan' then revenue else null end) as Jan_Revenue,
+	sum(case when month = 'feb' then revenue else null end) as Feb_Revenue,
+	sum(case when month = 'mar' then revenue else null end) as Mar_Revenue,
+	sum(case when month = 'apr' then revenue else null end) as Apr_Revenue,
+	sum(case when month = 'may' then revenue else null end) as May_Revenue,
+	sum(case when month = 'jun' then revenue else null end) as Jun_Revenue,
+	sum(case when month = 'jul' then revenue else null end) as Jul_Revenue,
+	sum(case when month = 'aug' then revenue else null end) as Aug_Revenue,
+	sum(case when month = 'sep' then revenue else null end) as Sep_Revenue,
+	sum(case when month = 'oct' then revenue else null end) as Oct_Revenue,
+	sum(case when month = 'nov' then revenue else null end) as Nov_Revenue,
+	sum(case when month = 'dec' then revenue else null end) as Dec_Revenue
+from department
+group by id
+order by id
+
+
+===================================
+
+1322. Ads Performance
+2022-09-10 Easy 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Ads
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| ad_id         | int     |
+| user_id       | int     |
+| action        | enum    |
++---------------+---------+
+(ad_id, user_id) is the primary key for this table.
+Each row of this table contains the ID of an Ad, the ID of a user, and the action taken by this user regarding this Ad.
+The action column is an ENUM type of ('Clicked', 'Viewed', 'Ignored').
+A company is running Ads and wants to calculate the performance of each Ad.
+
+Performance of the Ad is measured using Click-Through Rate (CTR) where:
+
+img
+
+Write an SQL query to find the ctr of each Ad. Round ctr to two decimal points.
+
+Return the result table ordered by ctr in descending order and by ad_id in ascending order in case of a tie.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Ads table:
++-------+---------+---------+
+| ad_id | user_id | action  |
++-------+---------+---------+
+| 1     | 1       | Clicked |
+| 2     | 2       | Clicked |
+| 3     | 3       | Viewed  |
+| 5     | 5       | Ignored |
+| 1     | 7       | Ignored |
+| 2     | 7       | Viewed  |
+| 3     | 5       | Clicked |
+| 1     | 4       | Viewed  |
+| 2     | 11      | Viewed  |
+| 1     | 2       | Clicked |
++-------+---------+---------+
+Output: 
++-------+-------+
+| ad_id | ctr   |
++-------+-------+
+| 1     | 66.67 |
+| 3     | 50.00 |
+| 2     | 33.33 |
+| 5     | 0.00  |
++-------+-------+
+Explanation: 
+for ad_id = 1, ctr = (2/(2+1)) * 100 = 66.67
+for ad_id = 2, ctr = (1/(1+2)) * 100 = 33.33
+for ad_id = 3, ctr = (1/(1+1)) * 100 = 50.00
+for ad_id = 5, ctr = 0.00, Note that ad_id = 5 has no clicks or views.
+Note that we do not care about Ignored Ads.
+Code
+SELECT ad_id, IFNULL(ROUND(AVG(CASE WHEN action = 'Clicked' THEN 1
+                         WHEN action = 'Viewed' THEN 0
+                         ELSE NULL END)*100,2),0) AS ctr
+FROM Ads
+GROUP BY ad_id
+ORDER BY ctr DESC, ad_id
+
+
+===========================
