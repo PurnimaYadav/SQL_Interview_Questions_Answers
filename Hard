@@ -1,0 +1,221 @@
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+1479. Sales by Day of the Week
+2022-08-27 Hard 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Orders
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| order_id      | int     |
+| customer_id   | int     |
+| order_date    | date    | 
+| item_id       | varchar |
+| quantity      | int     |
++---------------+---------+
+(ordered_id, item_id) is the primary key for this table.
+This table contains information on the orders placed.
+order_date is the date item_id was ordered by the customer with id customer_id.
+Table: Items
+
++---------------------+---------+
+| Column Name         | Type    |
++---------------------+---------+
+| item_id             | varchar |
+| item_name           | varchar |
+| item_category       | varchar |
++---------------------+---------+
+item_id is the primary key for this table.
+item_name is the name of the item.
+item_category is the category of the item.
+You are the business owner and would like to obtain a sales report for category items and the day of the week.
+
+Write an SQL query to report how many units in each category have been ordered on each day of the week.
+
+Return the result table ordered by category.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Orders table:
++------------+--------------+-------------+--------------+-------------+
+| order_id   | customer_id  | order_date  | item_id      | quantity    |
++------------+--------------+-------------+--------------+-------------+
+| 1          | 1            | 2020-06-01  | 1            | 10          |
+| 2          | 1            | 2020-06-08  | 2            | 10          |
+| 3          | 2            | 2020-06-02  | 1            | 5           |
+| 4          | 3            | 2020-06-03  | 3            | 5           |
+| 5          | 4            | 2020-06-04  | 4            | 1           |
+| 6          | 4            | 2020-06-05  | 5            | 5           |
+| 7          | 5            | 2020-06-05  | 1            | 10          |
+| 8          | 5            | 2020-06-14  | 4            | 5           |
+| 9          | 5            | 2020-06-21  | 3            | 5           |
++------------+--------------+-------------+--------------+-------------+
+Items table:
++------------+----------------+---------------+
+| item_id    | item_name      | item_category |
++------------+----------------+---------------+
+| 1          | LC Alg. Book   | Book          |
+| 2          | LC DB. Book    | Book          |
+| 3          | LC SmarthPhone | Phone         |
+| 4          | LC Phone 2020  | Phone         |
+| 5          | LC SmartGlass  | Glasses       |
+| 6          | LC T-Shirt XL  | T-Shirt       |
++------------+----------------+---------------+
+Output: 
++------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+| Category   | Monday    | Tuesday   | Wednesday | Thursday  | Friday    | Saturday  | Sunday    |
++------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+| Book       | 20        | 5         | 0         | 0         | 10        | 0         | 0         |
+| Glasses    | 0         | 0         | 0         | 0         | 5         | 0         | 0         |
+| Phone      | 0         | 0         | 5         | 1         | 0         | 0         | 10        |
+| T-Shirt    | 0         | 0         | 0         | 0         | 0         | 0         | 0         |
++------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+Explanation: 
+On Monday (2020-06-01, 2020-06-08) were sold a total of 20 units (10 + 10) in the category Book (ids: 1, 2).
+On Tuesday (2020-06-02) were sold a total of 5 units in the category Book (ids: 1, 2).
+On Wednesday (2020-06-03) were sold a total of 5 units in the category Phone (ids: 3, 4).
+On Thursday (2020-06-04) were sold a total of 1 unit in the category Phone (ids: 3, 4).
+On Friday (2020-06-05) were sold 10 units in the category Book (ids: 1, 2) and 5 units in Glasses (ids: 5).
+On Saturday there are no items sold.
+On Sunday (2020-06-14, 2020-06-21) were sold a total of 10 units (5 +5) in the category Phone (ids: 3, 4).
+There are no sales of T-shirts.
+Code
+select b.item_category as 'CATEGORY', sum(case when weekday(a.order_date) = 0 then a.quantity else 0 end) as 'MONDAY',
+sum(case when weekday(a.order_date) = 1 then a.quantity else 0 end) as 'TUESDAY',
+sum(case when weekday(a.order_date) = 2 then a.quantity else 0 end) as 'WEDNESDAY',
+sum(case when weekday(a.order_date) = 3 then a.quantity else 0 end) as 'THURSDAY',
+sum(case when weekday(a.order_date) = 4 then a.quantity else 0 end) as 'FRIDAY',
+sum(case when weekday(a.order_date) = 5 then a.quantity else 0 end) as 'SATURDAY',
+sum(case when weekday(a.order_date) = 6 then a.quantity else 0 end) as 'SUNDAY'
+from orders a right join items b on a.item_id = b.item_id
+group by b.item_category
+order by b.item_category
+
+
+=======================================================================================================
+
+
+
+JIAKAOBO
+Problems
+HomeLeetCodeOODSystem DesignBlog
+615. Average Salary: Departments VS Company
+2022-08-20 Hard 
+Database
+LeetCode
+youtube
+ JIAKAOBO
+LeetCode
+venmo
+wechat
+感谢赞助!
+㊗️
+大家
+offer
+多多！
+Problem
+Table: Salary
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| employee_id | int  |
+| amount      | int  |
+| pay_date    | date |
++-------------+------+
+id is the primary key column for this table.
+Each row of this table indicates the salary of an employee in one month.
+employee_id is a foreign key from the Employee table.
+Table: Employee
+
++---------------+------+
+| Column Name   | Type |
++---------------+------+
+| employee_id   | int  |
+| department_id | int  |
++---------------+------+
+employee_id is the primary key column for this table.
+Each row of this table indicates the department of an employee.
+Write an SQL query to report the comparison result (higher/lower/same) of the average salary of employees in a department to the company’s average salary.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Salary table:
++----+-------------+--------+------------+
+| id | employee_id | amount | pay_date   |
++----+-------------+--------+------------+
+| 1  | 1           | 9000   | 2017/03/31 |
+| 2  | 2           | 6000   | 2017/03/31 |
+| 3  | 3           | 10000  | 2017/03/31 |
+| 4  | 1           | 7000   | 2017/02/28 |
+| 5  | 2           | 6000   | 2017/02/28 |
+| 6  | 3           | 8000   | 2017/02/28 |
++----+-------------+--------+------------+
+Employee table:
++-------------+---------------+
+| employee_id | department_id |
++-------------+---------------+
+| 1           | 1             |
+| 2           | 2             |
+| 3           | 2             |
++-------------+---------------+
+Output: 
++-----------+---------------+------------+
+| pay_month | department_id | comparison |
++-----------+---------------+------------+
+| 2017-02   | 1             | same       |
+| 2017-03   | 1             | higher     |
+| 2017-02   | 2             | same       |
+| 2017-03   | 2             | lower      |
++-----------+---------------+------------+
+Explanation: 
+In March, the company's average salary is (9000+6000+10000)/3 = 8333.33...
+The average salary for department '1' is 9000, which is the salary of employee_id '1' since there is only one employee in this department. So the comparison result is 'higher' since 9000 > 8333.33 obviously.
+The average salary of department '2' is (6000 + 10000)/2 = 8000, which is the average of employee_id '2' and '3'. So the comparison result is 'lower' since 8000 < 8333.33.
+
+With he same formula for the average salary comparison in February, the result is 'same' since both the department '1' and '2' have the same average salary with the company, which is 7000.
+Code
+select department_salary.pay_month, department_id,
+case
+  when department_avg>company_avg then 'higher'
+  when department_avg<company_avg then 'lower'
+  else 'same'
+end as comparison
+from
+(
+  select department_id, avg(amount) as department_avg, date_format(pay_date, '%Y-%m') as pay_month
+  from salary join employee on salary.employee_id = employee.employee_id
+  group by department_id, pay_month
+) as department_salary
+join
+(
+  select avg(amount) as company_avg,  date_format(pay_date, '%Y-%m') as pay_month from salary group by date_format(pay_date, '%Y-%m')
+) as company_salary
+on department_salary.pay_month = company_salary.pay_month
+;
+
+
+====================================
